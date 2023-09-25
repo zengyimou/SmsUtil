@@ -12,6 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+local.properties
 /.idea
 /maven.properties
 /keystore
