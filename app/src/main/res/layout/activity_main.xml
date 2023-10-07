@@ -33,6 +33,7 @@
         android:textSize="16sp"
         android:layout_marginTop="16dp"
         android:text="上传短信"
+        tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_apply_permissions"/>
@@ -43,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="上传短信"
+        tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_upload_sms_info"/>
@@ -53,9 +55,35 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:text="上传短信"
+        android:text="上传进度"
+        tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_upload_sms"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_upload_call_log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="上传通话记录"
+        tools:visibility="visible"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_upload_sms_progress"/>
+
+    <TextView
+        android:id="@+id/tv_upload_call_log_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:text="通话记录上传进度"
+        tools:visibility="visible"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_upload_call_log"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

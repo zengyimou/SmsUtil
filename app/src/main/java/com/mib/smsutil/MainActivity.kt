@@ -1,18 +1,14 @@
 package com.mib.smsutil
 
 import android.Manifest
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import com.mib.smsutil.ContextHolder.context
 import com.mib.smsutil.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -20,6 +16,8 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var binding: ActivityMainBinding
 
 	var startInsertJob = false
+
+	var startInsertCalllog = false
 
 	private val requiredCommonPermissions: Array<String> by lazy {
 		val commonArray = mutableListOf(
@@ -30,22 +28,26 @@ class MainActivity : AppCompatActivity() {
 		commonArray.toTypedArray()
 	}
 
+	private val requiredCalllogPermissions: Array<String> by lazy {
+		val commonArray = mutableListOf(
+			Manifest.permission.READ_CALL_LOG,
+			Manifest.permission.WRITE_CALL_LOG,
+		)
+		commonArray.toTypedArray()
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
-		checkPermissions {
-			if (it) checkDefaultSmsApp()
-		}
+		smsRegister.launch(requiredCommonPermissions)
 		init()
 	}
 
 	private fun init() {
 		with(receiver = binding) {
 			btnApplyPermissions.setOnClickListener {
-				checkPermissions {
-					if (it && !checkDefaultSmsApp()) openDefaultSmsPage(defaultSmsApps)
-				}
+				smsRegister.launch(requiredCommonPermissions)
 			}
 			btnUploadSms.setOnClickListener {
 				if(startInsertJob){
@@ -65,46 +67,97 @@ class MainActivity : AppCompatActivity() {
 				}
 				startInsertJob = !startInsertJob
 			}
+
+			//上传通话记录
+			btnUploadCallLog.setOnClickListener {
+				if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+					if(startInsertCalllog){
+						btnUploadCallLog.text = "上传短信"
+						if(CalllogManager.insertJobList.size > 0){
+							CalllogManager.insertJobList[0].cancel()
+							CalllogManager.insertJobList.clear()
+						}
+					}else{
+						CalllogManager.insertCallLogData(insertCount = 1000){  percent,size, success ->
+							btnUploadCallLog.text = "停止上传短信"
+							//上传进度
+							binding.tvUploadCallLogProgress.text = "上传通话记录进度：${
+								BigDecimal(percent.toString()).multiply(BigDecimal(100)).setScale(1, RoundingMode.HALF_UP)
+							} % 已上传${size}条通话记录"
+						}
+					}
+					startInsertCalllog = !startInsertCalllog
+				}else{
+					calllogRegister.launch(requiredCalllogPermissions)
+				}
+			}
 		}
 	}
 
-	override fun onResume() {
-		super.onResume()
-		
+	val smsRegister = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+		val grantedPermissions = mutableListOf<String>()
+		val deniedPermissions = mutableListOf<String>()
+
+		permissions.entries.forEach { entry ->
+			val permission = entry.key
+			val isGranted = entry.value
+			if (isGranted) {
+				grantedPermissions.add(permission)
+			} else {
+				deniedPermissions.add(permission)
+			}
+		}
+		var allGranted = true
+		// 处理授予的权限
+		if (grantedPermissions.isNotEmpty()) {
+			// 继续执行相关操作
+			// ...
+		}
+
+		// 处理拒绝的权限
+		if (deniedPermissions.isNotEmpty()) {
+			// 处理拒绝情况
+			toast("必须要授权权限才能使用插入短信功能")
+			allGranted = false
+		}
+
+		if (allGranted && !checkDefaultSmsApp()) openDefaultSmsPage(defaultSmsApps)
 	}
 
-	private fun checkPermissions(callback: (success: Boolean) -> Unit = {}) {
-		if (PermissionUtil.hasPermission(this, *requiredCommonPermissions)) {
-			callback(true)
-		} else {
-			registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-				val grantedPermissions = mutableListOf<String>()
-				val deniedPermissions = mutableListOf<String>()
+	val calllogRegister = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+		val grantedPermissions = mutableListOf<String>()
+		val deniedPermissions = mutableListOf<String>()
 
-				permissions.entries.forEach { entry ->
-					val permission = entry.key
-					val isGranted = entry.value
-					if (isGranted) {
-						grantedPermissions.add(permission)
-					} else {
-						deniedPermissions.add(permission)
-					}
-				}
-				var allGranted = true
-				// 处理授予的权限
-				if (grantedPermissions.isNotEmpty()) {
-					// 继续执行相关操作
-					// ...
-				}
+		permissions.entries.forEach { entry ->
+			val permission = entry.key
+			val isGranted = entry.value
+			if (isGranted) {
+				grantedPermissions.add(permission)
+			} else {
+				deniedPermissions.add(permission)
+			}
+		}
+		var allGranted = true
+		// 处理授予的权限
+		if (grantedPermissions.isNotEmpty()) {
+			// 继续执行相关操作
+			// ...
+		}
 
-				// 处理拒绝的权限
-				if (deniedPermissions.isNotEmpty()) {
-					// 处理拒绝情况
-					toast("必须要授权权限才能使用插入短信功能")
-					allGranted = false
-				}
-				callback(allGranted)
-			}.launch(requiredCommonPermissions)
+		// 处理拒绝的权限
+		if (deniedPermissions.isNotEmpty()) {
+			// 处理拒绝情况
+			toast("必须要授权权限才能使用插入通话记录")
+			allGranted = false
+		}
+
+		if (allGranted){
+			CalllogManager.insertCallLogData(insertCount = 1000){  percent,size, success ->
+				//上传进度
+				binding.tvUploadCallLogProgress.text = "上传通话记录进度：${
+					BigDecimal(percent.toString()).multiply(BigDecimal(100)).setScale(1, RoundingMode.HALF_UP)
+				} % 已上传${size}条通话记录"
+			}
 		}
 	}
 
