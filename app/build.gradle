@@ -11,8 +11,8 @@ android {
         applicationId "com.mib.smsutil"
         minSdk 26
         targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,6 +40,15 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    // 设置输出文件的名称，例如：myapp-1.0.0-release.apk
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            def formattedDate = new Date().format("yyyyMMddHHmmss")
+            def newName = "SmsUtil-${variant.versionName}-${variant.buildType.name}-${formattedDate}.apk"
+            output.outputFileName = newName
+        }
     }
 }
 

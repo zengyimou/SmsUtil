@@ -69,19 +69,6 @@
             android:textColorHint="@color/c_999999"/>
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/ed_message_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginHorizontal="16dp"
-            android:inputType="text"
-            android:minLines="1"
-            android:maxLines="3"
-            android:hint="自定义短信内容(不填用默认)"
-            android:textColor="@color/c_111111"
-            android:textColorHint="@color/c_999999"/>
-
-        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/ed_sms_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,6 +78,21 @@
             android:maxLines="1"
             android:maxLength="4"
             android:hint="自定义生成短信条数(最多2000 不填默认2000)"
+            android:textColor="@color/c_111111"
+            android:textColorHint="@color/c_999999"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/ed_message_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginHorizontal="16dp"
+            android:singleLine="false"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:maxHeight="200dp"
+            android:gravity="top|start"
+            android:hint="自定义短信内容(不填用默认)内容不超过50字符"
             android:textColor="@color/c_111111"
             android:textColorHint="@color/c_999999"/>
 
