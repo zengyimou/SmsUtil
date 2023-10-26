@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">SmsUtil</string>
+
+    <string name="upload_sms">上传短信</string>
+    <string name="custom_config">自定参数配置</string>
+    <string name="upload_progress">上传进度</string>
+    <string name="stop_upload_sms">停止上传短信</string>
+    <string name="upload_progress_info">"上传短信进度：%1$s % 已上传%2$s条短信"</string>
+    <string name="is_default_sms_applications">是否是默认短信应用？</string>
+    <string name="request_default_sms_permissions">申请默认短信应用权限</string>
+    <string name="limit_default_sms_permissions">必须要授权权限才能使用插入短信功能</string>
+
+    <string name="upload_calllog">上传通话记录</string>
+    <string name="stop_upload_calllog">停止上传通话记录</string>
+    <string name="limit_default_calllog_permissions">必须要授权权限才能使用插入通话记录</string>
+    <string name="upload_progress_calllog_info">"上传通话记录进度：%1$s % 已上传%2$s条通话记录"</string>
+
+    <string name="request_success">授权成功</string>
+
+    <string name="default_sms_application">默认短信应用: %1$s</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>

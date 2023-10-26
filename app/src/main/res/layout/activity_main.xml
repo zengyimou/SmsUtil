@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:text="是否是默认短信应用？"
+        android:text="@string/is_default_sms_applications"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="申请默认短信应用权限"
+        android:text="@string/request_default_sms_permissions"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_permission_status"/>
 
@@ -32,22 +32,81 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         android:layout_marginTop="16dp"
-        android:text="上传短信"
+        android:text="@string/upload_sms"
         tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_apply_permissions"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_custom_config"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:visibility="visible"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_upload_sms_info">
+        <TextView
+            android:id="@+id/tv_custom_config"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"
+            android:text="@string/custom_config"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/ed_phone_num"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginHorizontal="16dp"
+            android:inputType="number"
+            android:maxLines="1"
+            android:hint="自定义短信号码(不填用默认)"
+            android:textColor="@color/c_111111"
+            android:textColorHint="@color/c_999999"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/ed_message_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginHorizontal="16dp"
+            android:inputType="text"
+            android:minLines="1"
+            android:maxLines="3"
+            android:hint="自定义短信内容(不填用默认)"
+            android:textColor="@color/c_111111"
+            android:textColorHint="@color/c_999999"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/ed_sms_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginHorizontal="16dp"
+            android:inputType="number"
+            android:maxLines="1"
+            android:maxLength="4"
+            android:hint="自定义生成短信条数(最多2000 不填默认2000)"
+            android:textColor="@color/c_111111"
+            android:textColorHint="@color/c_999999"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_upload_sms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="上传短信"
+        android:text="@string/upload_sms"
         tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_upload_sms_info"/>
+        app:layout_constraintTop_toBottomOf="@+id/ll_custom_config"/>
 
     <TextView
         android:id="@+id/tv_upload_sms_progress"
@@ -55,7 +114,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:text="上传进度"
+        android:text="@string/upload_progress"
         tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +125,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="上传通话记录"
+        android:text="@string/upload_calllog"
         tools:visibility="visible"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +137,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:text="通话记录上传进度"
+        android:text="@string/upload_progress"
         tools:visibility="visible"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"

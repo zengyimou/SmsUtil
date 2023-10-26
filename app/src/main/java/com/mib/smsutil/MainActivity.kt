@@ -15,9 +15,9 @@ import java.math.RoundingMode
 class MainActivity : AppCompatActivity() {
 	private lateinit var binding: ActivityMainBinding
 
-	var startInsertJob = false
+	private var startInsertJob = false
 
-	var startInsertCalllog = false
+	private var startInsertCalllog = false
 
 	private val requiredCommonPermissions: Array<String> by lazy {
 		val commonArray = mutableListOf(
@@ -50,15 +50,22 @@ class MainActivity : AppCompatActivity() {
 				smsRegister.launch(requiredCommonPermissions)
 			}
 			btnUploadSms.setOnClickListener {
-				if(startInsertJob){
-					btnUploadSms.text = "上传短信"
-					if(SmsDbManager.insertSmsJobList.size > 0){
+				if (startInsertJob) {
+					btnUploadSms.text = context.getString(R.string.upload_sms)
+					if (SmsDbManager.insertSmsJobList.size > 0) {
 						SmsDbManager.insertSmsJobList[0].cancel()
 						SmsDbManager.insertSmsJobList.clear()
 					}
-				}else{
-					SmsDbManager.insertSms(smsCount = 2000, phoneNumber = "10086") { percent, count ->
-						btnUploadSms.text = "停止上传短信"
+				} else {
+					val smsCount = if(edSmsCount.text?.isNotEmpty() == true) edSmsCount.text.toString() else "2000"
+					val phoneNumber = if(edPhoneNum.text?.isNotEmpty() == true) edPhoneNum.text.toString() else "10086"
+					val smsContent = if(edMessageContent.text?.isNotEmpty() == true) edMessageContent.text.toString() else "我是${(0..1000).random()}的，快开门"
+					SmsDbManager.insertSms(
+						smsCount = smsCount,
+						phoneNumber = phoneNumber,
+						smsContent = smsContent,
+					) { percent, count ->
+						btnUploadSms.text = context.getString(R.string.stop_upload_sms)
 						tvUploadSmsProgress.text = "上传短信进度：${
 							BigDecimal(percent.toString()).multiply(BigDecimal(100)).setScale(1, RoundingMode.HALF_UP)
 						} % 已上传${count}条短信"
@@ -71,15 +78,15 @@ class MainActivity : AppCompatActivity() {
 			//上传通话记录
 			btnUploadCallLog.setOnClickListener {
 				if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
-					if(startInsertCalllog){
-						btnUploadCallLog.text = "上传短信"
-						if(CalllogManager.insertJobList.size > 0){
+					if (startInsertCalllog) {
+						btnUploadCallLog.text = context.getString(R.string.upload_calllog)
+						if (CalllogManager.insertJobList.size > 0) {
 							CalllogManager.insertJobList[0].cancel()
 							CalllogManager.insertJobList.clear()
 						}
-					}else{
-						CalllogManager.insertCallLogData(insertCount = 1000){  percent,size, success ->
-							btnUploadCallLog.text = "停止上传短信"
+					} else {
+						CalllogManager.insertCallLogData(insertCount = 1000) { percent, size, success ->
+							btnUploadCallLog.text = context.getString(R.string.stop_upload_calllog)
 							//上传进度
 							binding.tvUploadCallLogProgress.text = "上传通话记录进度：${
 								BigDecimal(percent.toString()).multiply(BigDecimal(100)).setScale(1, RoundingMode.HALF_UP)
@@ -87,7 +94,7 @@ class MainActivity : AppCompatActivity() {
 						}
 					}
 					startInsertCalllog = !startInsertCalllog
-				}else{
+				} else {
 					calllogRegister.launch(requiredCalllogPermissions)
 				}
 			}
@@ -117,7 +124,7 @@ class MainActivity : AppCompatActivity() {
 		// 处理拒绝的权限
 		if (deniedPermissions.isNotEmpty()) {
 			// 处理拒绝情况
-			toast("必须要授权权限才能使用插入短信功能")
+			toast(context.getString(R.string.limit_default_sms_permissions))
 			allGranted = false
 		}
 
@@ -147,12 +154,12 @@ class MainActivity : AppCompatActivity() {
 		// 处理拒绝的权限
 		if (deniedPermissions.isNotEmpty()) {
 			// 处理拒绝情况
-			toast("必须要授权权限才能使用插入通话记录")
+			toast(context.getString(R.string.limit_default_calllog_permissions))
 			allGranted = false
 		}
 
-		if (allGranted){
-			CalllogManager.insertCallLogData(insertCount = 1000){  percent,size, success ->
+		if (allGranted) {
+			CalllogManager.insertCallLogData(insertCount = 1000) { percent, size, success ->
 				//上传进度
 				binding.tvUploadCallLogProgress.text = "上传通话记录进度：${
 					BigDecimal(percent.toString()).multiply(BigDecimal(100)).setScale(1, RoundingMode.HALF_UP)
@@ -166,7 +173,7 @@ class MainActivity : AppCompatActivity() {
 	 */
 	private val defaultSmsApps = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 		if (result.resultCode == RESULT_OK) {
-			toast("授权成功")
+			toast(context.getString(R.string.request_success))
 		}
 		checkDefaultSmsApp()
 	}
@@ -179,14 +186,15 @@ class MainActivity : AppCompatActivity() {
 		//判断默认短信应用
 		if (!isDefaultSmsApp()) {
 			isDefault = false
-			binding.tvPermissionStatus.text = "默认短信应用: NO"
+			binding.tvPermissionStatus.text = context.getString(R.string.default_sms_application, context.getString(R.string.no))
 		} else {
 			isDefault = true
-			binding.tvPermissionStatus.text = "默认短信应用: YES"
+			binding.tvPermissionStatus.text = context.getString(R.string.default_sms_application, context.getString(R.string.yes))
 		}
 		with(receiver = binding) {
 			btnUploadSms.visibility = if (isDefaultSmsApp()) View.VISIBLE else View.GONE
 			tvUploadSmsInfo.visibility = if (isDefaultSmsApp()) View.VISIBLE else View.GONE
+			llCustomConfig.visibility = if (isDefaultSmsApp()) View.VISIBLE else View.GONE
 		}
 		return isDefault
 	}
