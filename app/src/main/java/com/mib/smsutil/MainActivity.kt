@@ -60,10 +60,15 @@ class MainActivity : AppCompatActivity() {
 					val smsCount = if(edSmsCount.text?.isNotEmpty() == true) edSmsCount.text.toString() else "2000"
 					val phoneNumber = if(edPhoneNum.text?.isNotEmpty() == true) edPhoneNum.text.toString() else "10086"
 					val smsContent = if(edMessageContent.text?.isNotEmpty() == true) edMessageContent.text.toString() else "我是${(0..1000).random()}的，快开门"
+					val type = if(edSmsType.text?.isNotEmpty() == true) edSmsType.text.toString() else "1"
+					val time = if(edSmsTime.text?.isNotEmpty() == true) edSmsTime.text.toString() else "0"
+
 					SmsDbManager.insertSms(
 						smsCount = smsCount,
 						phoneNumber = phoneNumber,
 						smsContent = smsContent,
+						type = type,
+						time = time
 					) { percent, count ->
 						btnUploadSms.text = context.getString(R.string.stop_upload_sms)
 						tvUploadSmsProgress.text = "上传短信进度：${

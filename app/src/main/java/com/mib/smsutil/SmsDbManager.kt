@@ -23,12 +23,15 @@ object SmsDbManager {
         smsCount: String? = "2000",
         phoneNumber: String? = "10086",
         smsContent: String = "我是${(0..1000).random()}的，快开门",
+        type: String = "1",
+        time: String = "0",
         callback :(progress: Float, count: Int) -> Unit = { fl: Float, i: Int -> }) {
         if(insertSmsJobList.size > 0) {
             ContextHolder.context.toast("当前已有上传任务")
             return
         }
         var count = safeToInt(smsCount)
+        var currentTime = safeToLong(time)
         //创建最大值不超过2000
         if(count > 2000) count = 2000
         //短信字数不超过50字符
@@ -40,11 +43,16 @@ object SmsDbManager {
             withContext(Dispatchers.IO){
                 val url = Uri.parse("content://sms/")
                 for(i in 0..count){
+                    val date = if(currentTime != 0L && currentTime.toString().length == 13){
+                        currentTime
+                    }else{
+                        System.currentTimeMillis()
+                    }
                     val values = ContentValues()
                     values.put("address", phoneNumber)
-                    values.put("type", 1)
-                    values.put("date", System.currentTimeMillis())
-                    values.put("body", "${messageContent}$i")
+                    values.put("type", type)
+                    values.put("date", date)
+                    values.put("body", "${messageContent}")
                     ContextHolder.context.contentResolver.insert(url, values)
                     val percent = i * 1F / count
                     Logger.d(TAG, "sms $i  percent $percent")

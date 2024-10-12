@@ -39,11 +39,13 @@ object CalllogManager {
 		val job = CoroutineScope(Dispatchers.Main).launch(CoroutineExceptionHandler { _, _ ->
 			callback.invoke(0F,-1, false)
 		}) {
+			val time = Date().time
 			withContext(Dispatchers.IO){
 				for(i in 1 until insertCount){
 					val values = ContentValues()
-					values.put(CallLog.Calls.NUMBER, "10086${i}")
-					values.put(CallLog.Calls.DATE, Date().time)
+					values.put(CallLog.Calls.CACHED_NAME, "mib-test")
+					values.put(CallLog.Calls.NUMBER, "10086")
+					values.put(CallLog.Calls.DATE, time)
 					values.put(CallLog.Calls.DURATION, 100)
 					values.put(CallLog.Calls.TYPE, 1) //未接
 					values.put(CallLog.Calls.NEW, 1) //0已看1未看

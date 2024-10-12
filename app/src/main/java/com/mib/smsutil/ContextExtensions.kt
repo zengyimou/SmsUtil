@@ -32,3 +32,11 @@ fun safeToInt(s: String?): Int {
         2000
     }
 }
+
+fun safeToLong(s: String?): Long {
+    return try {
+        s?.toLong()?: 0L
+    } catch (ex: NumberFormatException) {
+        0L
+    }
+}
