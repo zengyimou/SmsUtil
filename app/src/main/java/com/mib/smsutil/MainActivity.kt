@@ -80,6 +80,18 @@ class MainActivity : AppCompatActivity() {
 							startInsertJob = !startInsertJob
 						}
 					}
+
+//					SmsDbManager.customInsert{ percent, count ->
+//						btnUploadSms.text = context.getString(R.string.stop_upload_sms)
+//						tvUploadSmsProgress.text = "上传短信进度：${
+//							BigDecimal(percent.toString()).multiply(BigDecimal(100)).setScale(1, RoundingMode.HALF_UP)
+//						} % 已上传${count}条短信"
+//						tvUploadSmsProgress.visibility = View.VISIBLE
+//						if(percent == 1F) {
+//							btnUploadSms.text = context.getString(R.string.upload_sms)
+//							startInsertJob = !startInsertJob
+//						}
+//					}
 				}
 				startInsertJob = !startInsertJob
 			}
